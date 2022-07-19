@@ -60,9 +60,31 @@ const destroy = async (req, res) => {
   res.status(StatusCodes.OK).json({ msg: 'user deleted successfully! ' });
 };
 
+const stats = async (req, res) => {
+  const today = new Date();
+  const lastYear = today.setFullYear(today.getFullYear() - 1);
+
+  const data = await User.aggregate([
+    {
+      $project: {
+        month: { $month: '$createdAt' }
+      }
+    },
+    {
+      $group: {
+        _id: '$month',
+        total: { $sum: 1 }
+      }
+    }
+  ]);
+
+  res.status(StatusCodes.OK).json({ data });
+};
+
 module.exports = {
   index,
   show,
   update,
-  destroy
+  destroy,
+  stats
 };
