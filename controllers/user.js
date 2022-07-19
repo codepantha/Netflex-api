@@ -45,6 +45,8 @@ const update = async (req, res) => {
     { new: true, runValidators: true }
   );
 
+  if (!user) throw new NotFoundError(`No user found`);
+
   res.status(StatusCodes.OK).json({ user });
 };
 
