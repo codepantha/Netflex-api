@@ -9,6 +9,7 @@ const connectDB = require('./db/connect');
 const authRouter = require('./routes/auth');
 const userRouter = require('./routes/users');
 const movieRouter = require('./routes/movies');
+const listRouter = require('./routes/lists');
 
 // middleware
 const errorHandlerMiddleware = require('./middleware/errorHandler');
@@ -19,6 +20,7 @@ app.use(express.json());
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', authenticateUser, userRouter);
 app.use('/api/v1/movies', authenticateUser, movieRouter);
+app.use('/api/v1/lists', authenticateUser, listRouter);
 
 app.use(errorHandlerMiddleware);
 
