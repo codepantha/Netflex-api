@@ -8,28 +8,18 @@ const List = require('../models/List');
  */
 const index = async (req, res) => {
   const { type, genre } = req.query;
-  let list;
 
-  if (!type && !genre) list = await List.aggregate([{ $sample: { size: 10 } }]);
+  const queryObject = { $sample: { size: 10 } };
+  if (type) queryObject.$match = { type };
+  if (genre) queryObject.$match.genre = genre;
 
-  if (type && !genre)
-    list = await List.aggregate([
-      { $match: { type } },
-      { $sample: { size: 10 } }
-    ]);
+  const queryObjectArray = [];
 
-  if (!type && genre)
-    list = await List.aggregate([
-      { $match: { genre } },
-      { $sample: { size: 10 } }
-    ]);
+  for (key in queryObject) queryObjectArray.push({ [key]: queryObject[key] });
+  // to get the matches before the sample, let's reverse the order
+  queryObjectArray.reverse();
 
-  if (type && genre) {
-    list = await List.aggregate([
-      { $match: { type, genre } },
-      { $sample: { size: 10 } }
-    ]);
-  }
+  const list = await List.aggregate(queryObjectArray);
 
   res.status(StatusCodes.OK).json({ list, nbHits: list.length });
 };
