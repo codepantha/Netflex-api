@@ -3,6 +3,7 @@ require('express-async-errors');
 
 const express = require('express');
 const app = express();
+const cors = require('cors');
 const connectDB = require('./db/connect');
 
 // routers
@@ -16,6 +17,7 @@ const errorHandlerMiddleware = require('./middleware/errorHandler');
 const authenticateUser = require('./middleware/authentication');
 
 app.use(express.json());
+app.use(cors());
 
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', authenticateUser, userRouter);
